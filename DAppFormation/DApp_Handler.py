@@ -50,6 +50,7 @@ class DApp_Handler:
             self.additional_config = None
 
         self.logger = logger
+        self.logger.info("ENTROU: finalizou init")
 
     def start_dapp_network(self):
         """
@@ -58,6 +59,7 @@ class DApp_Handler:
         """
 
         try:
+            self.logger.info("ENTROU: dapp_network")
             blockchain_thread = threading.Thread(target=self.blockchain_handler.run_general_startup,
                                                  name=self.blockchain_config['blockchain_type'].capitalize() + "-Network")
 
@@ -72,8 +74,9 @@ class DApp_Handler:
                                                      name="Prometheus-Server")
                 prometheus_thread.start()
                 prometheus_thread.join()
-
+            self.logger.info("Entrou: Terminou o start")
             blockchain_thread.join()
+            self.logger.info("Entrou: Mei do join")
             client_thread.join()
 
             self.logger.info("Now attach stuff after parallelism is finished")
@@ -121,6 +124,7 @@ class DApp_Handler:
         except Exception as e:
             self.logger.exception(e)
             raise NetworkNotStartingError()
+        self.logger.info("ENTROU: finalizou dapp_network")
 
     def terminate_dapp_network(self):
         """
