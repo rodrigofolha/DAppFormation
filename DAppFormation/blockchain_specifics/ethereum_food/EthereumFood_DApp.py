@@ -17,10 +17,10 @@ import os
 import time
 
 from BlockchainFormation.Node_Handler import datetimeconverter
-from BlockchainFormation.utils.utils import wait_till_done
+from BlockchainFormation.utils.utils import wait_till_done, wait_till_done_contains
 
 
-class Ethereum_DApp:
+class EthereumFood_DApp:
 
     @staticmethod
     def startup(dapp_handler):
@@ -49,7 +49,7 @@ class Ethereum_DApp:
         os.system(f"cp {src_name}/benchmarking/benchmarking.js {client_config['exp_dir']}/setup")
 
         logger.debug("Writing truffle config")
-        Ethereum_DApp.write_truffle_config(ethereum_config, client_config)
+        EthereumFood_DApp.write_truffle_config(ethereum_config, client_config)
 
         logger.info("Installing truffle and necessary node-packages and deploying smart contracts on each client")
 
@@ -59,11 +59,11 @@ class Ethereum_DApp:
 
         channels = []
         for client, _ in enumerate(client_config['priv_ips']):
-            channel = Ethereum_DApp.client_installation(ethereum_config, client_config, ssh_clients, scp_clients, client, logger)
+            channel = EthereumFood_DApp.client_installation(ethereum_config, client_config, ssh_clients, scp_clients, client, logger)
             channels.append(channel)
 
         logger.debug("Waiting until all installations have been completed")
-        if False in wait_till_done(client_config, ssh_clients, client_config['ips'], 360, 10, "/home/ubuntu/setup/deploy.log", "Saving artifacts...", 60, logger, "tail -n 1"):
+        if False in wait_till_done_contains(client_config, ssh_clients, client_config['ips'], 360, 10, "/home/ubuntu/setup/deploy.log", "Final cost", 60, logger, "tail -n 10"):
             raise Exception("Installation failed")
 
         # Geth/parity only have public contract, therefore no array is needed
@@ -107,11 +107,11 @@ class Ethereum_DApp:
                 #stdout.readlines()
 
         logger.info("Installation and contract deployment were successful")
-        logger.info("                                 ")
-        logger.info("=================================")
-        logger.info("      Client setup completed     ")
-        logger.info("=================================")
-        logger.info("                                 ")
+        logger.info("                                          ")
+        logger.info("==========================================")
+        logger.info("      Client setup for Food completed     ")
+        logger.info("==========================================")
+        logger.info("                                          ")
         logger.info("Conducting a small test")
         stdin, stdout, stderr = ssh_clients[0].exec_command("(cd /home/ubuntu/setup && . ~/.profile && node test.js | grep -e writeDataPublic -e readDataPublic)")
         #stdin, stdout, stderr = ssh_clients[0].exec_command("(cd /home/ubuntu/setup && . ~/.profile && node test.js | grep -e getIndex)")
@@ -154,12 +154,13 @@ class Ethereum_DApp:
             account = ""
 
         # logger.debug("Creating config.json for this client")
-        Ethereum_DApp.write_config(client_config, ip, account)
+        EthereumFood_DApp.write_config(client_config, ip, account)
 
-        # logger.debug(f" --> Copying client setup stuff to client {client}, installing packages and truffle and deploying smart contracts")
+        #logger.debug(f" --> Copying client setup stuff to client {client}, installing packages and truffle and deploying smart contracts")
         client_scp_clients[client].put(f"{client_config['exp_dir']}/setup", "/home/ubuntu", recursive=True)
         channel = client_ssh_clients[client].get_transport().open_session()
-        channel.exec_command(f"(cd setup && . ~/.profile && npm install >> install.log && npm install -g truffle@4.1.16 >> install.log && . ~/.profile && truffle migrate --reset --network node{client % n} >> deploy.log)")
+        #logger.debug(f" --> Truffle installationcat {client}, installing packages and truffle and deploying smart contracts")
+        channel.exec_command(f"(cd setup && . ~/.profile && npm install >> install.log && npm install -g truffle@5.6.7 >> install.log && . ~/.profile && truffle migrate --reset --network node{client % n} >> deploy.log)")
         return channel
 
     @staticmethod
@@ -186,10 +187,15 @@ class Ethereum_DApp:
                 f.write(f"      host: \"{ip}\",\n")
                 f.write("      port: 8545,\n")
                 f.write("      network_id: \"*\",\n")
-                f.write("      gasPrice: 5000000000,\n")
-                f.write("      gas: 3000000,\n")
+                f.write("      gasPrice: 50000000,\n")
+                f.write("      gas: 85792841,\n")
                 f.write("    }" + finish + "\n")
 
+            f.write("  },\n")
+            f.write("  compilers: {\n")
+            f.write("solc: { \n")
+            f.write("version: \"^0.8.0\"\n", )
+            f.write("}")
             f.write("  }\n")
             f.write("};\n")
 
@@ -201,7 +207,7 @@ class Ethereum_DApp:
         config = dict()
 
         config["artifactPublic"] = "./build/contracts/BenchContractPublic.json"
-        #config["chainPublic"] = "./build/contracts/ChainContract.json"
+        config["chainPublic"] = "./build/contracts/Chain.json"
         config["node"] = f"http://{ip}:8545"
         config["account"] = f"{account}"
 

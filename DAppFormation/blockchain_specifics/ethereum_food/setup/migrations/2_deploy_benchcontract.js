@@ -15,8 +15,9 @@
  */
 
 var BenchContractPublic = artifacts.require("BenchContractPublic");
-/*var ChainContract = artifacts.require("Chain");
-var StorageContract = artifacts.require("Storage");
+var Util = artifacts.require("Util");
+var ChainContract = artifacts.require("Chain");
+/*var StorageContract = artifacts.require("Storage");
 var ViewContract = artifacts.require("View");
 var InteractContract = artifacts.require("Interact");*/
 
@@ -24,7 +25,9 @@ const config = require("./../config.json");
 
 module.exports = function(deployer) {
     deployer.deploy(BenchContractPublic, 60);
-    //deployer.deploy(ChainContract, 60);
+    deployer.deploy(Util);
+    deployer.link(Util, ChainContract);
+    deployer.deploy(ChainContract);   
     //deployer.deploy(StorageContract, 60);
     //deployer.deploy(ViewContract, 60);
     //deployer.deploy(InteractContract, 60);

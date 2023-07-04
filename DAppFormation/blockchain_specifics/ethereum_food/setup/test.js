@@ -34,14 +34,23 @@ async function test(){
     //initializing the contracts
     await bench.init().catch(err => {console.log(err)})
 
-    /*start = Date.now()
+    start = Date.now()
     result = await bench.getIndex()
     nr = await bench.getBlockNumber()
     console.log("get Index:" + result)
     console.log("elapsed time: " + (Date.now()-start))
     console.log("")
     console.log("=======================")
-    console.log("")*/
+    console.log("")
+
+    start = Date.now()
+    result = await bench.makeOrder(2,10,[{'name': 'test', 'quantity': 1, 'price': 4}, {'name': 'test2', 'quantity': 2, 'price': 3}])
+    nr = await bench.getBlockNumber()
+    console.log("makeOrder:" + result)
+    console.log("elapsed time: " + (Date.now()-start))
+    console.log("")
+    console.log("=======================")
+    console.log("")
 
     start = Date.now()
     result = await bench.queryDoNothingPublic()

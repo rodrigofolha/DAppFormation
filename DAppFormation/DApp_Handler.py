@@ -19,6 +19,7 @@ from BlockchainFormation.blockchain_specifics.indy_client.Indy_client_Network im
 from DAppFormation.blockchain_specifics.couchdb.Couchdb_DApp import Couchdb_DApp
 from DAppFormation.blockchain_specifics.empty.Empty_DApp import Empty_DApp
 from DAppFormation.blockchain_specifics.ethereum.Ethereum_DApp import Ethereum_DApp
+from DAppFormation.blockchain_specifics.ethereum_food.EthereumFood_DApp import EthereumFood_DApp
 from DAppFormation.blockchain_specifics.fabric.Fabric_DApp import Fabric_DApp
 from DAppFormation.blockchain_specifics.indy.Indy_DApp import Indy_DApp
 from DAppFormation.blockchain_specifics.leveldb.Leveldb_DApp import Leveldb_DApp
@@ -113,7 +114,7 @@ class DApp_Handler:
                     func = getattr(globals()[f"Acapy_DApp"], "startup")
                     func(self)
                 else:
-                    func = getattr(globals()[f"{blockchain_type.capitalize()}_DApp"], "startup")
+                    func = getattr(globals()[f"EthereumFood_DApp"], "startup")
                     func(self)
 
             except Exception as e:

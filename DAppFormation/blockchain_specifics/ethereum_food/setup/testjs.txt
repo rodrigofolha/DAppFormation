@@ -34,15 +34,6 @@ async function test(){
     //initializing the contracts
     await bench.init().catch(err => {console.log(err)})
 
-    /*start = Date.now()
-    result = await bench.getIndex()
-    nr = await bench.getBlockNumber()
-    console.log("get Index:" + result)
-    console.log("elapsed time: " + (Date.now()-start))
-    console.log("")
-    console.log("=======================")
-    console.log("")*/
-
     start = Date.now()
     result = await bench.queryDoNothingPublic()
     nr = await bench.getBlockNumber()

@@ -156,6 +156,12 @@ async function helper(bench, n) {
 		}
 		else if (args.method == "invokeMatrixMultiplication" && args.mode == "public"){
 		    result = await bench.invokeMatrixMultiplicationPublic(args.arg)
+		}		
+		else if (args.method == "makeOrder"){
+		    result = await bench.makeOrder(2,10,[{'name': 'test', 'quantity': 1, 'price': 4}, {'name': 'test2', 'quantity': 2, 'price': 3}])
+		}
+		else if (args.method == "getIndex"){
+		    result = await bench.getIndex()
 		}
 		else if (args.method == "queryMatrixMultiplication" && args.mode == "private") {
 			result = await bench.queryMatrixMultiplicationPrivate(args.arg)

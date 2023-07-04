@@ -26,6 +26,7 @@ const provider = new Web3.providers.HttpProvider(config.node);
 const web3 = new Web3(provider);
 
 const artifactPublic = require(config.artifactPublic);
+//const chainPublic = require(config.chainPublic);
 
 const account = config.account
 
@@ -45,6 +46,10 @@ class Bench {
         const MyContract2 = TruffleContract(artifactPublic);
         MyContract2.setProvider(provider);
         this.instance2 = await MyContract2.deployed().catch(err => {return Promise.reject(err); console.error(err)});
+        Promise.resolve(true);
+        const MyContract3 = TruffleContract(chainPublic);
+        MyContract3.setProvider(provider);
+        this.instance3 = await MyContract3.deployed().catch(err => {return Promise.reject(err); console.error(err)});
         return Promise.resolve(true);
     }
 
@@ -79,7 +84,7 @@ class Bench {
     async getTmpPublic() {
         let returnValue = await this.instance2.getTmp({
             from: account,
-            gas: 300000000
+            gas: 300000
         }).catch(err => {return Promise.reject(err)});
         return Promise.resolve(returnValue)
     }
@@ -88,10 +93,43 @@ class Bench {
     async setTmpPublic(value) {
         let returnValue = await this.instance2.setTmp(value, {
             from: account,
-            gas: 300000000
+            gas: 300000
         }).catch(err => {return Promise.reject(err)});
         return Promise.resolve(returnValue.receipt.blockNumber)
     }
+ 
+    /**
+     * Order Creation
+     * @param value
+     * @param account
+     * @param array of public keys for private transactions
+     */
+
+    /*async makeOrder(restaurant_address, delivery_fee, total, items) {
+        let gas_estimated = await web3.eth.getGasPrice();
+        let returnValue = await this.instance3.makeOrder(restaurant_address, delivery_fee, total-delivery_fee, items, items, {
+            from: account,
+            gas: 4000000,
+            gasPrice: gas_estimated,
+            value: parseInt(total)
+        }).catch(err => {return Promise.reject(err)});
+        let order = await this.instance3.getIndex().call();
+        Promise.resolve(returnValue.receipt.blockNumber);
+        return Promise.resolve(order);
+    };*/
+
+      /**
+     * Get Index
+     * @param account
+     * @param array of public keys for private transactions
+     */
+
+    /*async getIndex() {
+        let order = await this.instance3.getIndex( {
+            from: account
+        }).catch(err => {return Promise.reject(err)});
+        return Promise.resolve(order);
+    };*/
 
 
 
@@ -105,7 +143,7 @@ class Bench {
     async queryMatrixMultiplicationPublic(value) {
         let returnValue = await this.instance2.queryMatrixMultiplication(value, {
             from: account,
-            gas: 300000000
+            gas: 300000
         }).catch(err => {return Promise.reject(err)});
         return Promise.resolve(returnValue);
     };
@@ -115,9 +153,9 @@ class Bench {
     async invokeMatrixMultiplicationPublic(value) {
         let returnValue = await this.instance2.invokeMatrixMultiplication(value, {
             from: account,
-            gas: 300000000
+            gas: 300000
         }).catch(err => {return Promise.reject(err)});
-        return Promise.resolve(returnValue.receipt.blockNumber);
+        return Promise.resolve(returnValue);
     };
 
 
@@ -125,7 +163,7 @@ class Bench {
     async setMatrixMultiplicationPublic(value) {
         let returnValue = await this.instance2.setMatrixMultiplication(value, {
             from: account,
-            gas: 300000000
+            gas: 300000
         }).catch(err => {return Promise.reject(err)});
         return Promise.resolve(returnValue.receipt.blockNumber);
     };
@@ -142,7 +180,7 @@ class Bench {
      async queryDoNothingPublic() {
         let returnValue = await this.instance2.queryDoNothing({
             from: account,
-            gas: 300000000
+            gas: 300000
         }).catch(err => {return Promise.reject(err)});
         return Promise.resolve(returnValue);
     }
@@ -152,9 +190,9 @@ class Bench {
     async invokeDoNothingPublic() {
         let returnValue = await this.instance2.invokeDoNothing({
             from: account,
-            gas: 300000000
+            gas: 300000
         }).catch(err => {return Promise.reject(err)});
-        return Promise.resolve(returnValue.receipt.blockNumber);
+        return Promise.resolve(returnValue);
     }
 
 
@@ -170,7 +208,7 @@ class Bench {
     async writeDataPublic(key, value) {
         let returnValue = await this.instance2.writeData(key, value, {
             from: account,
-            gas: 300000000
+            gas: 300000
         }).catch(err => {return Promise.reject(err)});
         return Promise.resolve(returnValue.receipt.blockNumber);
     }
@@ -187,7 +225,7 @@ class Bench {
      async readDataPublic(key) {
         let returnValue = await this.instance2.readData(key, {
             from: account,
-            gas: 300000000
+            gas: 300000
         }).catch(err => {return Promise.reject(err)});
         return Promise.resolve(returnValue);
      }
@@ -204,7 +242,7 @@ class Bench {
      async writeMuchDataPublic(len, start, delta) {
          let returnValue = await this.instance2.writeMuchData(parseInt(len, 10), parseInt(start, 10), parseInt(delta, 10), {
              from: account,
-             gas: 300000000
+             gas: 300000
          }).catch(err => {return Promise.reject(err)});
          return Promise.resolve(returnValue.receipt.blockNumber)
      }
@@ -221,7 +259,7 @@ class Bench {
      async readMuchDataPublic(len, start) {
          let returnValue = await this.instance2.readMuchData(len, start, {
              from: account,
-            gas: 300000000
+            gas: 300000
          }).catch(err => {return Promise.reject(err)});
          return Promise.resolve(returnValue)
      }
